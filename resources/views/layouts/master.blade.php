@@ -8,6 +8,8 @@
     <link rel="shortcut icon" type="image/png" href="{{ ASSET_PATH }}template/assets/images/logos/seodashlogo.png" />
     <link rel="stylesheet" href="{{ ASSET_PATH }}template/assets/libs/simplebar/dist/simplebar.min.css">
     <link rel="stylesheet" href="{{ ASSET_PATH }}template/assets/css/styles.min.css" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.4/r-3.0.7/datatables.min.css" rel="stylesheet"
+        integrity="sha384-RaJlMsTv+nhuWA/3SQzc3dPVUOKfEb08YW4YZsaNK3UNFUhjvLkn/SwJEfKSavGD" crossorigin="anonymous">
 </head>
 
 <body>
@@ -35,6 +37,32 @@
     <script src="{{ ASSET_PATH }}template/assets/js/sidebarmenu.js"></script>
     <script src="{{ ASSET_PATH }}template/assets/js/app.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.3.4/r-3.0.7/datatables.min.js"
+        integrity="sha384-O4V7rOTTcSRflQBTMk8URAYWhGGEMgmmLFrqu3e83FQtze3vmndvrH3GcRdrfXRu" crossorigin="anonymous">
+    </script>
+    <script>
+        function successAlert(message) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function errorAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: message,
+                showConfirmButton: true
+            });
+        }
+    </script>
+    @stack('scripts')
 </body>
 
 </html>
