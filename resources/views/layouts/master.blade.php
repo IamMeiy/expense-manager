@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ ASSET_PATH }}template/assets/css/styles.min.css" />
     <link href="https://cdn.datatables.net/v/bs5/dt-2.3.4/r-3.0.7/datatables.min.css" rel="stylesheet"
         integrity="sha384-RaJlMsTv+nhuWA/3SQzc3dPVUOKfEb08YW4YZsaNK3UNFUhjvLkn/SwJEfKSavGD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
@@ -42,6 +43,8 @@
     <script src="https://cdn.datatables.net/v/bs5/dt-2.3.4/r-3.0.7/datatables.min.js"
         integrity="sha384-O4V7rOTTcSRflQBTMk8URAYWhGGEMgmmLFrqu3e83FQtze3vmndvrH3GcRdrfXRu" crossorigin="anonymous">
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script>
         function successAlert(message) {
             Swal.fire({
@@ -55,8 +58,12 @@
 
         function errorAlert(messages) {
             let errorMessages = '';
-            for (let field in messages) {
-                errorMessages += messages[field].join('<br>') + '<br>';
+            if (typeof messages === 'string') {
+                errorMessages = messages;
+            } else {
+                for (let field in messages) {
+                    errorMessages += messages[field].join('<br>') + '<br>';
+                }
             }
 
             Swal.fire({

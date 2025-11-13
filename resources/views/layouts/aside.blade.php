@@ -32,6 +32,14 @@
                         <span class="hide-menu">Users</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('income.*') ? 'active' : '' }}" href="{{ route('income.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-cash"></i>
+                        </span>
+                        <span class="hide-menu">Income</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

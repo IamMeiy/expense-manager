@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +26,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    /* Below routes for the income */
+    Route::get('/income', [IncomeController::class, 'index'])->name('income.index');
+    Route::get('/income/create', [IncomeController::class, 'create'])->name('income.create');
+    Route::post('/income', [IncomeController::class, 'store'])->name('income.store');
+    Route::get('/income/{income}', [IncomeController::class, 'show'])->name('income.show');
+    Route::get('/income/{income}/edit', [IncomeController::class, 'edit'])->name('income.edit');
+    Route::put('/income/{income}', [IncomeController::class, 'update'])->name('income.update');
+    Route::delete('/income/{income}', [IncomeController::class, 'destroy'])->name('income.destroy');
 });
 
 require __DIR__ . '/auth.php';
