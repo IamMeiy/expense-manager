@@ -39,10 +39,18 @@
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('users.index') }}',
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'name', name: 'name' },
-                    { data: 'email', name: 'email' },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
                     {
                         data: 'action',
                         name: 'action',
@@ -50,6 +58,47 @@
                         searchable: false
                     }
                 ]
+            });
+
+            $(document).on('click', '.delete-user', function() {
+                const url = $(this).data('url');
+                const button = $(this);
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result, button) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            beforeSend: function() {
+                                button.prop('disabled', true);
+                            },
+                            success: function(result) {
+                                button.prop('disabled', false);
+                                table.ajax.reload();
+                                successAlert(result.message);
+                            },
+                            error: function(xhr, status, error) {
+                                button.prop('disabled', false);
+                                let errors = xhr.responseJSON.errors;
+                                errorAlert(errors || {
+                                    'error': [
+                                        'An error occurred while deleting the user.'
+                                    ]
+                                });
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>

@@ -40,9 +40,9 @@ class UserController extends Controller
                         <a href="' . $editUrl . '" class="btn btn-sm btn-primary">
                             <i class="ti ti-edit"></i> Edit
                         </a>
-                        <button class="btn btn-sm btn-danger" data-url="' . $deleteUrl . '">
+                        <button class="btn btn-sm btn-danger delete-user" data-url="' . $deleteUrl . '">
                             <i class="ti ti-trash"></i> Delete
-                            </button>
+                        </button>
                     ';
                 })
                 ->rawColumns(['action'])
@@ -133,9 +133,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
         try {
+            $user = User::findOrFail(decrypt($id));
             $user->delete();
             return response()->json(['message' => 'User deleted successfully'], 200);
         } catch (\Throwable $th) {
