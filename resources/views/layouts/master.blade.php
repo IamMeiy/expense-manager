@@ -53,11 +53,16 @@
             });
         }
 
-        function errorAlert(message) {
+        function errorAlert(messages) {
+            let errorMessages = '';
+            for (let field in messages) {
+                errorMessages += messages[field].join('<br>') + '<br>';
+            }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: message,
+                html: errorMessages,
                 showConfirmButton: true
             });
         }

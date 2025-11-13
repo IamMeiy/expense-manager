@@ -93,17 +93,41 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        //
+        try {
+            $decryptedId = decrypt($id);
+            $user = User::findOrFail($decryptedId);
+
+            return view('users.edit', compact('user'));
+        } catch (\Throwable $th) {
+            return abort(403, 'Failed to load edit form: ' . $th->getMessage());
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(decrypt($id))->whereNull('deleted_at')],
+            'password' => ['nullable', 'string', 'min:8'],
+        ]);
+        try {
+            $user = User::findOrFail(decrypt($id));
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+            if (!empty($validated['password'])) {
+                $user->password = Hash::make($validated['password']);
+            }
+            $user->save();
+
+            return response()->json(['message' => 'User updated successfully'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to update user', 'error' => $th->getMessage(), 'trace' => $th->getTrace()], 500);
+        }
     }
 
     /**

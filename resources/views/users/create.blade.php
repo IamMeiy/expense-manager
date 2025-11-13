@@ -52,8 +52,8 @@
                 },
                 error: function(xhr) {
                     $('form button[type="submit"]').attr('disabled', false);
-                    const res = xhr.responseJSON;
-                    errorAlert(res.message || 'An error occurred');
+                    let errors = xhr.responseJSON.errors;
+                    errorAlert(errors || 'An error occurred');
                 }
             });
         });
