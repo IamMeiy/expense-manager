@@ -1,36 +1,39 @@
 @extends('layouts.master')
 
-@section('title', 'Create Income')
+@section('title', 'Edit Income')
 
 @section('content')
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h4 class="card-title">Create Income</h4>
+                <h4 class="card-title">Edit Income</h4>
                 <a href="{{ route('income.index') }}" class="btn btn-dark">
                     <i class="ti ti-arrow-left me-1"></i> Back
                 </a>
             </div>
             <div class="card-body">
-                <form action="{{ route('income.store') }}" method="POST" autocomplete="off">
+                <form action="{{ route('income.update', ['income' => encrypt($income->id)]) }}" method="POST" autocomplete="off">
                     @csrf
+                    @method('PUT')
+
                     <div class="mb-3">
                         <label for="source" class="form-label">Income Source</label>
-                        <input type="text" class="form-control" id="source" name="source" required>
+                        <input type="text" class="form-control" id="source" name="source" value="{{ $income->source }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="amount" class="form-label">Amount</label>
-                        <input type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" value="0.00" required>
+                        <input type="number" class="form-control" id="amount" name="amount" min="0"
+                            step="0.01" value="{{ $income->amount }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description"></textarea>
+                        <textarea class="form-control" id="description" name="description">{{ $income->description }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control date-pickr" id="date" name="date" required>
+                        <input type="date" class="form-control date-pickr" id="date" name="date" value="{{ $income->received_at }}" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Income</button>
+                    <button type="submit" class="btn btn-primary">Update Income</button>
                 </form>
             </div>
         </div>

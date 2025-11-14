@@ -60,7 +60,7 @@ class IncomeController extends Controller
             Income::create([
                 'user_id' => Auth::user()->id,
                 'source' => $validated['source'],
-                'amount' => $validated['amount'],
+                'amount' => number_format($validated['amount'], 2, '.', ''),
                 'description' => $validated['description'] ?? null,
                 'received_at' => $validated['date'],
             ]);
@@ -68,6 +68,49 @@ class IncomeController extends Controller
             return response()->json(['message' => 'Income stored successfully'], 201);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Failed to store income', 'error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function edit($id)
+    {
+        try {
+            $income = Income::findOrFail(decrypt($id));
+            if ($income->user_id !== Auth::user()->id) {
+                return redirect()->route('income.index')->with('error', 'Unauthorized access');
+            }
+            return view('income.edit', compact('income'));
+        } catch (\Throwable $th) {
+            return redirect()->route('income.index')->with('error', 'Income not found');
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'source' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric'],
+            'description' => ['nullable', 'string'],
+            'date' => ['required', 'date'],
+        ]);
+        try {
+            $income = Income::findOrFail(decrypt($id));
+            if ($income->user_id !== Auth::user()->id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+            if ($validated['amount'] <= 0) {
+                return response()->json(['message' => 'Amount must be greater than zero'], 422);
+            }
+
+            $income->update([
+                'source' => $validated['source'],
+                'amount' => number_format($validated['amount'], 2, '.', ''),
+                'description' => $validated['description'] ?? null,
+                'received_at' => $validated['date'],
+            ]);
+
+            return response()->json(['message' => 'Income updated successfully'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to update income', 'error' => $th->getMessage()], 500);
         }
     }
 
