@@ -67,7 +67,22 @@ class IncomeController extends Controller
 
             return response()->json(['message' => 'Income stored successfully'], 201);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Failed to store income', 'error' => $th->getMessage(), 'trace' => $th->getTrace()], 500);
+            return response()->json(['message' => 'Failed to store income', 'error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $income = Income::findOrFail(decrypt($id));
+            if ($income->user_id !== Auth::user()->id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+            $income->delete();
+
+            return response()->json(['message' => 'Income deleted successfully'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to delete income', 'error' => $th->getMessage()], 500);
         }
     }
 }

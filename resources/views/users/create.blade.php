@@ -7,7 +7,7 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Create New User</h4>
-                <a href="{{ route('users.index') }}" class="btn btn-secondary btn-sm">
+                <a href="{{ route('users.index') }}" class="btn btn-dark">
                     <i class="ti ti-arrow-left"></i> Back to Users
                 </a>
             </div>

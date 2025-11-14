@@ -78,7 +78,7 @@ class UserController extends Controller
             ]);
             return response()->json(['message' => 'User created successfully'], 201);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Failed to create user', 'error' => $th->getMessage(), 'trace' => $th->getTrace()], 500);
+            return response()->json(['message' => 'Failed to create user', 'error' => $th->getMessage()], 500);
         }
     }
 
@@ -126,7 +126,7 @@ class UserController extends Controller
 
             return response()->json(['message' => 'User updated successfully'], 200);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Failed to update user', 'error' => $th->getMessage(), 'trace' => $th->getTrace()], 500);
+            return response()->json(['message' => 'Failed to update user', 'error' => $th->getMessage()], 500);
         }
     }
 
@@ -140,7 +140,7 @@ class UserController extends Controller
             $user->delete();
             return response()->json(['message' => 'User deleted successfully'], 200);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Failed to delete user', 'error' => $th->getMessage(), 'trace' => $th->getTrace()], 500);
+            return response()->json(['message' => 'Failed to delete user', 'error' => $th->getMessage()], 500);
         }
     }
 }
