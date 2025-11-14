@@ -40,6 +40,14 @@
                         <span class="hide-menu">Income</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('expense.*') ? 'active' : '' }}" href="{{ route('expense.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-coin-rupee"></i>
+                        </span>
+                        <span class="hide-menu">Expense</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

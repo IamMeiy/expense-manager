@@ -11,6 +11,46 @@
     <link href="https://cdn.datatables.net/v/bs5/dt-2.3.4/r-3.0.7/datatables.min.css" rel="stylesheet"
         integrity="sha384-RaJlMsTv+nhuWA/3SQzc3dPVUOKfEb08YW4YZsaNK3UNFUhjvLkn/SwJEfKSavGD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* Main box */
+        .select2-container--custom .select2-selection--single {
+            height: 38px;
+            border: 1px solid #ced4da;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* Remove default arrow background */
+        .select2-container--custom .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+            right: 10px;
+        }
+
+        /* Text inside */
+        .select2-container--custom .select2-selection__rendered {
+            color: #495057;
+            line-height: 28px;
+        }
+
+        /* Dropdown */
+        .select2-container--custom .select2-dropdown {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+        }
+
+        /* Hover options */
+        .select2-container--custom .select2-results__option--highlighted {
+            background-color: #f0f0f0 !important;
+            color: #000 !important;
+        }
+
+        .select2-container .select2-results__options {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,6 +84,7 @@
         integrity="sha384-O4V7rOTTcSRflQBTMk8URAYWhGGEMgmmLFrqu3e83FQtze3vmndvrH3GcRdrfXRu" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         function successAlert(message) {
@@ -73,6 +114,12 @@
                 showConfirmButton: true
             });
         }
+        $('.modal').on('shown.bs.modal', function() {
+            $(this).find('.modal-select').select2({
+                theme: 'custom',
+                dropdownParent: $(this)
+            });
+        });
     </script>
     @stack('scripts')
 </body>

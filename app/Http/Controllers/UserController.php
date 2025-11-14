@@ -33,7 +33,7 @@ class UserController extends Controller
                 ->addColumn('email', function ($user) {
                     return $user->email;
                 })
-                ->addColumn('action', function ($user) {
+                ->addColumn('actions', function ($user) {
                     $editUrl = route('users.edit', encrypt($user->id));
                     $deleteUrl = route('users.destroy', encrypt($user->id));
                     return '
@@ -45,7 +45,7 @@ class UserController extends Controller
                         </button>
                     ';
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['actions'])
                 ->make(true);
         }
         return view('users.index');

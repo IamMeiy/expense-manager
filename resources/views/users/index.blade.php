@@ -21,7 +21,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,8 +53,8 @@
                         name: 'email'
                     },
                     {
-                        data: 'action',
-                        name: 'action',
+                        data: 'actions',
+                        name: 'actions',
                         orderable: false,
                         searchable: false
                     }

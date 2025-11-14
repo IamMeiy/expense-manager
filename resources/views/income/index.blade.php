@@ -20,7 +20,7 @@
                                 <th class="text-center">Source</th>
                                 <th class="text-center">Amount</th>
                                 <th class="text-center">Date</th>
-                                <th class="text-center">Action</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
