@@ -37,10 +37,10 @@ class UserController extends Controller
                     $editUrl = route('users.edit', encrypt($user->id));
                     $deleteUrl = route('users.destroy', encrypt($user->id));
                     return '
-                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary">
+                        <a href="' . $editUrl . '" class="btn btn-primary">
                             <i class="ti ti-edit"></i> Edit
                         </a>
-                        <button class="btn btn-sm btn-danger delete-user" data-url="' . $deleteUrl . '">
+                        <button class="btn btn-danger delete-user" data-url="' . $deleteUrl . '">
                             <i class="ti ti-trash"></i> Delete
                         </button>
                     ';

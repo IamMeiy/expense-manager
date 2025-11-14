@@ -6,8 +6,8 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-start">
-                <h4 class="card-title">Users List</h4>
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">
+                <h4 class="card-title">User List</h4>
+                <a href="{{ route('users.create') }}" class="btn btn-primary">
                     <i class="ti ti-user-plus"></i> Add User
                 </a>
             </div>
@@ -38,6 +38,7 @@
             const table = $('#users-table').DataTable({
                 processing: true,
                 serverSide: true,
+                responsive: true,
                 ajax: '{{ route('users.index') }}',
                 columns: [{
                         data: 'id',
