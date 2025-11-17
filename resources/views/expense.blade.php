@@ -86,6 +86,64 @@
             </div>
         </div>
     </div>
+
+    {{-- Expense - Edit Modal --}}
+    <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editExpenseForm" method="PUT" action="" autocomplete="off">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-3">
+                            <label for="edit_date" class="form-label">Date</label>
+                            <input type="date" class="form-control date-pickr" id="edit_date" name="date"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_payee" class="form-label">Payee</label>
+                            <input type="text" class="form-control" id="edit_payee" name="payee" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="edit_amount" name="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_expense_type" class="form-label">Expense Type</label>
+                            <select name="expense_type_id" id="edit_expense_type" class="form-select modal-select"
+                                style="width: 100%;" required>
+                                <option value="">Select Expense Type</option>
+                                @foreach (EXPENSE_TYPES as $key => $expenseType)
+                                    <option value="{{ $key }}" data-parent="" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" data-bs-title="{{ $expenseType['description'] }}">
+                                        {{ $expenseType['title'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_payment_method" class="form-label">Payment Method</label>
+                            <select name="payment_method_id" id="edit_payment_method" class="form-select modal-select"
+                                style="width: 100%;" required>
+                                <option value="">Select Payment Method</option>
+                                @foreach (PAYMENT_METHODS as $key => $method)
+                                    <option value="{{ $key }}">{{ $method }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="edit_description" name="description" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Expense</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -100,8 +158,7 @@
                     [7, 'desc']
                 ],
                 ajax: "{{ route('expense.index') }}",
-                columns: [
-                    {
+                columns: [{
                         data: 'date',
                         name: 'date'
                     },
@@ -162,6 +219,62 @@
                     },
                     error: function(xhr) {
                         $('#addExpenseForm button[type="submit"]').attr('disabled', false);
+                        let errors = xhr.responseJSON.errors || xhr.responseJSON.message;
+                        errorAlert(errors || 'An error occurred');
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-expense', function() {
+                const url = $(this).data('url');
+                const button = $(this);
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    beforeSend: function() {
+                        button.prop('disabled', true);
+                        $('#editExpenseForm').trigger('reset');
+                    },
+                    success: function(response) {
+                        button.prop('disabled', false);
+                        const expense = response.expense;
+                        $('#editExpenseForm').attr('action', response.url);
+                        $('#edit_date').val(expense.date.split('T')[0]);
+                        $('#edit_payee').val(expense.payee);
+                        $('#edit_amount').val(expense.amount);
+                        $('#edit_expense_type').val(expense.expense_type_id).trigger('change');
+                        $('#edit_payment_method').val(expense.payment_method_id).trigger(
+                            'change');
+                        $('#edit_description').val(expense.description);
+                        $('#editExpenseModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        button.prop('disabled', false);
+                        let errors = xhr.responseJSON.errors || xhr.responseJSON.message;
+                        errorAlert(errors ||
+                            'An error occurred while fetching the expense details.');
+                    }
+                });
+            });
+
+            $(document).on('submit', '#editExpenseForm', function(event) {
+                event.preventDefault();
+                const form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: form.serialize(),
+                    beforeSend: function() {
+                        $('#editExpenseForm button[type="submit"]').attr('disabled', true);
+                    },
+                    success: function(response) {
+                        $('#editExpenseForm button[type="submit"]').attr('disabled', false);
+                        $('#editExpenseModal').modal('hide');
+                        successAlert(response.message);
+                        table.ajax.reload();
+                    },
+                    error: function(xhr) {
+                        $('#editExpenseForm button[type="submit"]').attr('disabled', false);
                         let errors = xhr.responseJSON.errors || xhr.responseJSON.message;
                         errorAlert(errors || 'An error occurred');
                     }

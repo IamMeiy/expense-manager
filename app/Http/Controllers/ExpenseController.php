@@ -27,9 +27,9 @@ class ExpenseController extends Controller
                     $editUrl = route('expense.edit', encrypt($expense->id));
                     $deleteUrl = route('expense.destroy', encrypt($expense->id));
                     return '
-                        <a href="' . $editUrl . '" class="btn btn-primary">
+                        <button data-url="' . $editUrl . '" class="btn btn-primary edit-expense">
                             <i class="ti ti-edit"></i> Edit
-                        </a>
+                        </button>
                         <button class="btn btn-danger delete-expense" data-url="' . $deleteUrl . '">
                             <i class="ti ti-trash"></i> Delete
                         </button>
@@ -78,8 +78,52 @@ class ExpenseController extends Controller
             Expense::create($validatedData);
 
             return response()->json(['message' => 'Expense added successfully.'], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to add expense.', 'error' => $e->getMessage()], 500);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to add expense.', 'error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function edit($id)
+    {
+        try {
+            $expense = Expense::findOrFail(decrypt($id));
+
+            if ($expense->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized action.'], 403);
+            }
+            
+            return response()->json(['expense' => $expense, 'url' => route('expense.update', ['expense' => $id])], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to fetch expense.', 'error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $expense = Expense::findOrFail(decrypt($id));
+
+            if ($expense->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized action.'], 403);
+            }
+
+            $validatedData = $request->validate([
+                'expense_type_id' => 'required|integer',
+                'payment_method_id' => 'required|integer',
+                'date' => 'required|date',
+                'payee' => 'required|string|max:255',
+                'amount' => 'required|numeric',
+                'description' => 'nullable|string',
+                'invoice' => 'nullable|string|max:255',
+            ]);
+
+            $validatedData['amount'] = number_format($validatedData['amount'], 2, '.', '');
+
+            $expense->update($validatedData);
+
+            return response()->json(['message' => 'Expense updated successfully.'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to update expense.', 'error' => $th->getMessage()], 500);
         }
     }
 
@@ -95,8 +139,8 @@ class ExpenseController extends Controller
             $expense->delete();
 
             return response()->json(['message' => 'Expense deleted successfully.'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete expense.', 'error' => $e->getMessage()], 500);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Failed to delete expense.', 'error' => $th->getMessage()], 500);
         }
     }
 }
