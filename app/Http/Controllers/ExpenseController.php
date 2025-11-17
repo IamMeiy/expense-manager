@@ -12,12 +12,15 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return DataTables::of(Expense::query())
+            return DataTables::of(Expense::query()->where('user_id', Auth::id()))
                 ->filter(function ($query) {
-                    $query->where('user_id', Auth::id());
-                    if (request()->has('search')) {
-                        $query->where('payee', 'like', '%' . request('search')['value'] . '%')
-                            ->orWhere('amount', 'like', '%' . request('search')['value'] . '%');
+                    // get the datatables search value safely
+                    $search = request('search')['value'] ?? null;
+                    if ($search !== null && $search !== '') {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('payee', 'like', "%{$search}%")
+                                ->orWhere('amount', 'like', "%{$search}%");
+                        });
                     }
                 })
                 ->addColumn('actions', function ($expense) {
@@ -44,10 +47,10 @@ class ExpenseController extends Controller
                 ->editColumn('payment_method', function ($expense) {
                     return PAYMENT_METHODS[$expense->payment_method_id] ?? 'N/A';
                 })
-                ->orderColumn('expense_type', function($query, $order) {
+                ->orderColumn('expense_type', function ($query, $order) {
                     $query->orderBy('expense_type_id', $order);
                 })
-                ->orderColumn('payment_method', function($query, $order) {
+                ->orderColumn('payment_method', function ($query, $order) {
                     $query->orderBy('payment_method_id', $order);
                 })
                 ->rawColumns(['actions'])
@@ -77,6 +80,23 @@ class ExpenseController extends Controller
             return response()->json(['message' => 'Expense added successfully.'], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to add expense.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $expense = Expense::findOrFail(decrypt($id));
+
+            if ($expense->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized action.'], 403);
+            }
+
+            $expense->delete();
+
+            return response()->json(['message' => 'Expense deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete expense.', 'error' => $e->getMessage()], 500);
         }
     }
 }

@@ -96,10 +96,12 @@
                 serverSide: true,
                 responsive: true,
                 order: [
-                    [0, 'desc']
+                    [0, 'desc'],
+                    [7, 'desc']
                 ],
                 ajax: "{{ route('expense.index') }}",
-                columns: [{
+                columns: [
+                    {
                         data: 'date',
                         name: 'date'
                     },
@@ -129,6 +131,11 @@
                         orderable: false,
                         searchable: false
                     },
+                    {
+                        data: 'id',
+                        name: 'id',
+                        visible: false
+                    },
                 ]
             });
 
@@ -157,6 +164,47 @@
                         $('#addExpenseForm button[type="submit"]').attr('disabled', false);
                         let errors = xhr.responseJSON.errors || xhr.responseJSON.message;
                         errorAlert(errors || 'An error occurred');
+                    }
+                });
+            });
+
+            $(document).on('click', '.delete-expense', function() {
+                const url = $(this).data('url');
+                const button = $(this);
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            beforeSend: function() {
+                                button.prop('disabled', true);
+                            },
+                            success: function(result) {
+                                button.prop('disabled', false);
+                                table.ajax.reload();
+                                successAlert(result.message);
+                            },
+                            error: function(xhr, status, error) {
+                                button.prop('disabled', false);
+                                let errors = xhr.responseJSON.errors;
+                                errorAlert(errors || {
+                                    'error': [
+                                        'An error occurred while deleting the expense.'
+                                    ]
+                                });
+                            }
+                        });
                     }
                 });
             });
