@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Income;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -13,6 +14,13 @@ class IncomeController extends Controller
     {
         if ($request->ajax()) {
             return DataTables::of(Income::where('user_id', Auth::user()->id))
+                ->filter(function ($query) use ($request) {
+                    $from_date = $request->get('from_date');
+                    $to_date = $request->get('to_date');
+                    if ($from_date && $to_date) {
+                        $query->whereBetween('received_at', [$from_date, $to_date]);
+                    }
+                })
                 ->addColumn('actions', function ($income) {
                     $editUrl = route('income.edit', encrypt($income->id));
                     $deleteUrl = route('income.destroy', encrypt($income->id));

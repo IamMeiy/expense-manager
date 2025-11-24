@@ -7,19 +7,56 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Income List</h4>
-                <a href="{{ route('income.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i> Add Income
-                </a>
+                <div class="btn-div">
+                    <button class="btn btn-dark filter-btn my-1" type="button"
+                        onclick="$('.filter-div').toggle('fast', 'linear');">
+                        <i class="ti ti-filter me-1"></i> Filter
+                    </button>
+                    <a href="{{ route('income.create') }}" class="btn btn-primary my-1">
+                        <i class="ti ti-plus me-1"></i> Add Income
+                    </a>
+                </div>
             </div>
             <div class="card-body">
+                <div class="filter-div mb-3" style="display: none;">
+                    <div class="filter-body">
+                        <div class="row mx-2">
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <div class="form-group">
+                                    <label for="from-date">From Date</label>
+                                    <input type="date" name="from_date" id="from_date" class="form-control date-pickr" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <div class="form-group">
+                                    <label for="to-date">To Date</label>
+                                    <input type="date" name="to_date" id="to_date" class="form-control date-pickr" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-footer mt-3">
+                        <div class="row mx-2">
+                            <div class="col d-flex justify-content-end">
+                                <div class="btn-div">
+                                    <button type="button" id="filter-btn" class="btn btn-info me-2 my-1">
+                                        <i class="ti ti-filter me-1"></i> Apply Filter
+                                    </button>
+                                    <button type="button" id="reset-btn" class="btn btn-warning my-1">
+                                        <i class="ti ti-refresh me-1"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th class="text-center">ID</th>
+                                <th class="text-center">Date</th>
                                 <th class="text-center">Source</th>
                                 <th class="text-center">Amount</th>
-                                <th class="text-center">Date</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -34,17 +71,31 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            $('.date-pickr').flatpickr({
+                dateFormat: "Y-m-d",
+                allowInput: true,
+                maxDate: "today"
+            });
+
             const table = $('table').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
                 order: [
-                    [0, 'desc']
+                    [4, 'desc']
                 ],
-                ajax: '{{ route('income.index') }}',
+                ajax: {
+                    url: '{{ route('income.index') }}',
+                    type: 'GET',
+                    data: function(d) {
+                        d.from_date = $('#from_date').val();
+                        d.to_date = $('#to_date').val();
+                    },
+                },
                 columns: [{
-                        data: 'id',
-                        name: 'id'
+                        data: 'received_at',
+                        name: 'received_at',
+                        className: 'text-center'
                     },
                     {
                         data: 'source',
@@ -56,18 +107,28 @@
                         className: 'text-start'
                     },
                     {
-                        data: 'received_at',
-                        name: 'received_at',
-                        className: 'text-center'
-                    },
-                    {
                         data: 'actions',
                         name: 'actions',
                         orderable: false,
                         searchable: false,
                         className: 'text-center'
+                    },
+                    {
+                        data: 'id',
+                        name: 'id',
+                        visible: false
                     }
                 ]
+            });
+
+            $(document).on('click', '#filter-btn', function() {
+                table.ajax.reload();
+            });
+
+            $(document).on('click', '#reset-btn', function() {
+                $('#from_date').val('');
+                $('#to_date').val('');
+                table.ajax.reload();
             });
 
             $(document).on('click', '.delete-income', function() {
