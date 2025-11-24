@@ -7,12 +7,74 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Expenses</h4>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal"><i
-                        class="ti ti-plus"></i> Add Expense</button>
+                <div class="btn-div">
+                    <button class="btn btn-dark filter-btn my-1" type="button"
+                        onclick="$('.filter-div').toggle('fast', 'linear');">
+                        <i class="ti ti-filter me-1"></i> Filter
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal"><i
+                            class="ti ti-plus"></i> Add Expense</button>
+                </div>
             </div>
         </div>
 
         <div class="card-body">
+            <div class="filter-div mb-3" style="display: none;">
+                <div class="filter-body">
+                    <div class="row mx-2">
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <div class="form-group">
+                                <label for="from-date">From Date</label>
+                                <input type="date" name="from_date" id="from_date" class="form-control date-pickr"
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <div class="form-group">
+                                <label for="to-date">To Date</label>
+                                <input type="date" name="to_date" id="to_date" class="form-control date-pickr"
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <div class="form-group">
+                                <label for="from-date">Expense Type</label>
+                                <select name="expense_type" id="expense_type" class="form-select select-2" style="width: 100%;" autocomplete="off">
+                                    <option value="">Select Expense Type</option>
+                                    @foreach (EXPENSE_TYPES as $key => $expenseType)
+                                        <option value="{{ $key }}">{{ $expenseType['title'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <div class="form-group">
+                                <label for="to-date">Payment Method</label>
+                                <select name="payment_method" id="payment_method" class="form-select select-2" style="width: 100%;" autocomplete="off">
+                                    <option value="">Select Payment Method</option>
+                                    @foreach (PAYMENT_METHODS as $key => $method)
+                                        <option value="{{ $key }}">{{ $method }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-footer mt-3">
+                    <div class="row mx-2">
+                        <div class="col d-flex justify-content-end">
+                            <div class="btn-div">
+                                <button type="button" id="filter-btn" class="btn btn-info me-2 my-1">
+                                    <i class="ti ti-filter me-1"></i> Apply Filter
+                                </button>
+                                <button type="button" id="reset-btn" class="btn btn-warning my-1">
+                                    <i class="ti ti-refresh me-1"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
@@ -88,7 +150,8 @@
     </div>
 
     {{-- Expense - Edit Modal --}}
-    <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -157,7 +220,16 @@
                     [0, 'desc'],
                     [7, 'desc']
                 ],
-                ajax: "{{ route('expense.index') }}",
+                ajax: {
+                    url :"{{ route('expense.index') }}",
+                    type: 'GET',
+                    data: function(d) {
+                        d.from_date = $('#from_date').val();
+                        d.to_date = $('#to_date').val();
+                        d.expense_type = $('#expense_type').val();
+                        d.payment_method = $('#payment_method').val();
+                    }   
+                },
                 columns: [{
                         data: 'date',
                         name: 'date'
@@ -194,6 +266,18 @@
                         visible: false
                     },
                 ]
+            });
+
+            $(document).on('click', '#filter-btn', function() {
+                table.ajax.reload();
+            });
+
+            $(document).on('click', '#reset-btn', function() {
+                $('#from_date').val('');
+                $('#to_date').val('');
+                $('#expense_type').val('').trigger('change');
+                $('#payment_method').val('').trigger('change');
+                table.ajax.reload();
             });
 
             $('.date-pickr').flatpickr({

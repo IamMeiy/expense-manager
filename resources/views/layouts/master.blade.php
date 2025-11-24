@@ -120,6 +120,10 @@
                 dropdownParent: $(this)
             });
         });
+
+        $('.select-2').select2({
+            theme: 'custom'
+        });
     </script>
     @stack('scripts')
 </body>

@@ -22,6 +22,15 @@ class ExpenseController extends Controller
                                 ->orWhere('amount', 'like', "%{$search}%");
                         });
                     }
+                    if (!empty(request('from_date')) && !empty(request('to_date'))) {
+                        $query->whereBetween('date', [request('from_date'), request('to_date')]);
+                    }
+                    if (!empty(request('expense_type'))) {
+                        $query->where('expense_type_id', request('expense_type'));
+                    }
+                    if (!empty(request('payment_method'))) {
+                        $query->where('payment_method_id', request('payment_method'));
+                    }
                 })
                 ->addColumn('actions', function ($expense) {
                     $editUrl = route('expense.edit', encrypt($expense->id));
