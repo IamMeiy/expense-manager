@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-sm-12 col-md-4 col-lg-3">
                             <div class="form-group">
-                                <label for="from-date">Expense Type</label>
+                                <label for="expense_type">Expense Type</label>
                                 <select name="expense_type" id="expense_type" class="form-select select-2" style="width: 100%;" autocomplete="off">
                                     <option value="">Select Expense Type</option>
                                     @foreach (EXPENSE_TYPES as $key => $expenseType)
@@ -49,7 +49,7 @@
                         </div>
                         <div class="col-sm-12 col-md-4 col-lg-3">
                             <div class="form-group">
-                                <label for="to-date">Payment Method</label>
+                                <label for="payment_method">Payment Method</label>
                                 <select name="payment_method" id="payment_method" class="form-select select-2" style="width: 100%;" autocomplete="off">
                                     <option value="">Select Payment Method</option>
                                     @foreach (PAYMENT_METHODS as $key => $method)

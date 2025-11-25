@@ -48,6 +48,14 @@
                         <span class="hide-menu">Expense</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('bank-accounts.*') ? 'active' : '' }}" href="{{ route('bank-accounts.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-pig-money"></i>
+                        </span>
+                        <span class="hide-menu">Bank Accounts</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

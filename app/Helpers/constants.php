@@ -89,3 +89,16 @@ if (!defined('EXPENSE_TYPES')) {
         ],
     ]);
 }
+
+/* Bank Account Types */
+if (!defined('BANK_ACCOUNT_TYPES')) {
+    define('BANK_ACCOUNT_TYPES', [
+        1 => 'SAVINGS',
+        2 => 'CURRENT',
+        3 => 'FIXED DEPOSIT',
+        4 => 'RECURRING DEPOSIT',
+        5 => 'NRI ACCOUNT',
+        6 => 'SALARY ACCOUNT',
+        7 => 'OTHER'
+    ]);
+}

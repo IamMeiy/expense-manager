@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BankAccountController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,6 +45,15 @@ Route::middleware('auth')->group(function () {
     Route::put('/expense/{expense}', [ExpenseController::class, 'update'])->name('expense.update');
     Route::delete('/expense/{expense}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
     
+    /* Below routes for the bank account */
+    Route::prefix('bank-accounts')->group(function () {
+        Route::get('/', [BankAccountController::class, 'index'])->name('bank-accounts.index');
+        Route::post('/', [BankAccountController::class, 'store'])->name('bank-accounts.store');
+        Route::get('/{bank_account}', [BankAccountController::class, 'show'])->name('bank-accounts.show');
+        Route::get('/{bank_account}/edit', [BankAccountController::class, 'edit'])->name('bank-accounts.edit');
+        Route::put('/{bank_account}', [BankAccountController::class, 'update'])->name('bank-accounts.update');
+        Route::delete('/{bank_account}', [BankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
+    });
 });
 
 require __DIR__ . '/auth.php';
