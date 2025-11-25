@@ -23,7 +23,7 @@ class BankAccountController extends Controller
                                 ->orWhere('account_number', 'like', "%{$search}%");
                         });
                     }
-                    info($request);
+                    
                     if($request->has('account_type') && !empty($request->account_type)) {
                         $query->where('account_type', $request->account_type);
                     }
