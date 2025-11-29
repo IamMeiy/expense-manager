@@ -67,20 +67,19 @@ class BankAccountController extends Controller
         }
     }
 
-    public function edit($account)
+    public function edit(BankAccount $bankAccount)
     {
         try {
-            $bankAccount = BankAccount::findOrFail(decrypt($account));
             if ($bankAccount->user_id !== Auth::id()) {
                 return response()->json(['message' => 'Unauthorized action.'], 403);
             }
-            return response()->json(['data' => $bankAccount, 'url' => route('bank-accounts.update', encrypt($bankAccount->id))], 200);
+            return response()->json(['data' => $bankAccount, 'url' => route('bank-accounts.update', $bankAccount->id)], 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Failed to fetch bank account details.', 'error' => $th->getMessage()], 500);
         }
     }
 
-    public function update(Request $request, $account)
+    public function update(Request $request, BankAccount $bankAccount)
     {
         $validated = $request->validate([
             'account_type' => 'required|integer',
@@ -88,10 +87,9 @@ class BankAccountController extends Controller
             'account_number' => ['required', 'string', 'max:255', Rule::unique('bank_accounts', 'account_number')->where(function ($query) {
                 return $query->where('user_id', Auth::id())
                     ->whereNull('deleted_at');
-            })->ignore(decrypt($account))],
+            })->ignore($bankAccount->id)],
         ]);
         try {
-            $bankAccount = BankAccount::findOrFail(decrypt($account));
             if ($bankAccount->user_id !== Auth::id()) {
                 return response()->json(['message' => 'Unauthorized action.'], 403);
             }
@@ -102,10 +100,9 @@ class BankAccountController extends Controller
         }
     }
 
-    public function destroy($account)
+    public function destroy(BankAccount $bankAccount)
     {
         try {
-            $bankAccount = BankAccount::findOrFail(decrypt($account));
             if ($bankAccount->user_id !== Auth::id()) {
                 return response()->json(['message' => 'Unauthorized action.'], 403);
             }

@@ -33,8 +33,8 @@ class ExpenseController extends Controller
                     }
                 })
                 ->addColumn('actions', function ($expense) {
-                    $editUrl = route('expense.edit', encrypt($expense->id));
-                    $deleteUrl = route('expense.destroy', encrypt($expense->id));
+                    $editUrl = route('expense.edit', $expense->id);
+                    $deleteUrl = route('expense.destroy', $expense->id);
                     return '
                         <button data-url="' . $editUrl . '" class="btn btn-primary edit-expense">
                             <i class="ti ti-edit"></i> Edit
@@ -92,26 +92,22 @@ class ExpenseController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(Expense $expense)
     {
         try {
-            $expense = Expense::findOrFail(decrypt($id));
-
             if ($expense->user_id !== Auth::id()) {
                 return response()->json(['message' => 'Unauthorized action.'], 403);
             }
             
-            return response()->json(['expense' => $expense, 'url' => route('expense.update', ['expense' => $id])], 200);
+            return response()->json(['expense' => $expense, 'url' => route('expense.update', ['expense' => $expense->id])], 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Failed to fetch expense.', 'error' => $th->getMessage()], 500);
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Expense $expense)
     {
         try {
-            $expense = Expense::findOrFail(decrypt($id));
-
             if ($expense->user_id !== Auth::id()) {
                 return response()->json(['message' => 'Unauthorized action.'], 403);
             }
@@ -136,11 +132,9 @@ class ExpenseController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Expense $expense)
     {
         try {
-            $expense = Expense::findOrFail(decrypt($id));
-
             if ($expense->user_id !== Auth::id()) {
                 return response()->json(['message' => 'Unauthorized action.'], 403);
             }

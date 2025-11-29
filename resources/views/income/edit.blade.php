@@ -12,7 +12,7 @@
                 </a>
             </div>
             <div class="card-body">
-                <form action="{{ route('income.update', ['income' => encrypt($income->id)]) }}" method="POST" autocomplete="off">
+                <form action="{{ route('income.update', ['income' => $income->id]) }}" method="POST" autocomplete="off">
                     @csrf
                     @method('PUT')
 

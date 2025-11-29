@@ -22,8 +22,8 @@ class IncomeController extends Controller
                     }
                 })
                 ->addColumn('actions', function ($income) {
-                    $editUrl = route('income.edit', encrypt($income->id));
-                    $deleteUrl = route('income.destroy', encrypt($income->id));
+                    $editUrl = route('income.edit', $income->id);
+                    $deleteUrl = route('income.destroy', $income->id);
                     
                     return '
                         <a href="' . $editUrl . '" class="btn btn-primary">
@@ -79,10 +79,9 @@ class IncomeController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(Income $income)
     {
         try {
-            $income = Income::findOrFail(decrypt($id));
             if ($income->user_id !== Auth::user()->id) {
                 return redirect()->route('income.index')->with('error', 'Unauthorized access');
             }
@@ -92,7 +91,7 @@ class IncomeController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Income $income)
     {
         $validated = $request->validate([
             'source' => ['required', 'string', 'max:255'],
@@ -101,7 +100,6 @@ class IncomeController extends Controller
             'date' => ['required', 'date'],
         ]);
         try {
-            $income = Income::findOrFail(decrypt($id));
             if ($income->user_id !== Auth::user()->id) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
@@ -122,10 +120,9 @@ class IncomeController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Income $income)
     {
         try {
-            $income = Income::findOrFail(decrypt($id));
             if ($income->user_id !== Auth::user()->id) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
