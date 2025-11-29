@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\SavingController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BankAccountController;
@@ -53,6 +54,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/{bank_account}/edit', [BankAccountController::class, 'edit'])->name('bank-accounts.edit');
         Route::put('/{bank_account}', [BankAccountController::class, 'update'])->name('bank-accounts.update');
         Route::delete('/{bank_account}', [BankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
+
+        /* Below routes for the savings within bank accounts */
+        Route::prefix('/{bank_account}/savings')->group(function () {
+            Route::get('/', [SavingController::class, 'index'])->name('savings.index');
+            Route::post('/', [SavingController::class, 'store'])->name('savings.store');
+            Route::get('/{saving}/edit', [SavingController::class, 'edit'])->name('savings.edit');
+            Route::put('/{saving}', [SavingController::class, 'update'])->name('savings.update');
+            Route::delete('/{saving}', [SavingController::class, 'destroy'])->name('savings.destroy');
+        });
     });
 });
 
