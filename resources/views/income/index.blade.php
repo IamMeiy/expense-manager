@@ -82,6 +82,7 @@
                 serverSide: true,
                 responsive: true,
                 order: [
+                    [0, 'desc'],
                     [4, 'desc']
                 ],
                 ajax: {

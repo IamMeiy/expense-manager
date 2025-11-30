@@ -114,6 +114,7 @@
                 showConfirmButton: true
             });
         }
+        
         $('.modal').on('shown.bs.modal', function() {
             $(this).find('.modal-select').select2({
                 theme: 'custom',
