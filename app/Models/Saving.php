@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\CheckProperUser;
+use App\Models\Concerns\HasUuid;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Saving extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasUuid, CheckProperUser;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -23,14 +25,8 @@ class Saving extends Model
         'transfer_reason',
     ];
 
-    protected static function boot()
+    public function bank_account()
     {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (!$model->getKey()) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
-        });
+        return $this->belongsTo(BankAccount::class);
     }
 }

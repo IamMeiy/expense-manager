@@ -23,12 +23,8 @@ class BankAccount extends Model
         'account_number',
     ];
 
-    public static function booted()
+    public function savings()
     {
-        static::addGlobalScope('user', function (Builder $builder) {
-            if (Auth::check()) {
-                $builder->where('user_id', Auth::id());
-            }
-        });
+        return $this->hasMany(Saving::class);
     }
 }

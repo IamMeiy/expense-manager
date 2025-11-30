@@ -49,7 +49,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{ request()->routeIs('bank-accounts.*') ? 'active' : '' }}" href="{{ route('bank-accounts.index') }}" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('bank-accounts.*') || request()->routeIs('savings.*') ? 'active' : '' }}" href="{{ route('bank-accounts.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-pig-money"></i>
                         </span>

@@ -35,8 +35,8 @@ class BankAccountController extends Controller
                     return substr($bankAccount->account_number, -4);
                 })
                 ->addColumn('balance', function ($bankAccount) {
-                    // Placeholder for balance calculation logic
-                    return '0';
+                    $balance = $bankAccount->savings->sum('amount') - $bankAccount->savings->sum('transfered_amount');
+                    return '₹ ' . number_format($balance, 2);
                 })
                 ->addColumn('actions', function ($bankAccount) {
                     return view('bank.partials.account_actions', ['bankAccount' => $bankAccount])->render();
