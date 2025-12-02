@@ -23,14 +23,27 @@
                         <div class="row mx-2">
                             <div class="col-sm-12 col-md-4 col-lg-3">
                                 <div class="form-group">
+                                    <label for="source">Income Source</label>
+                                    <select name="source" id="source" class="form-select select-2" style="width: 100%;" required>
+                                        <option value="">Select Income Source</option>
+                                        @foreach (INCOME_SOURCES as $key => $source)
+                                            <option value="{{ $key }}">{{ $source }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <div class="form-group">
                                     <label for="from-date">From Date</label>
-                                    <input type="date" name="from_date" id="from_date" class="form-control date-pickr" autocomplete="off">
+                                    <input type="date" name="from_date" id="from_date" class="form-control date-pickr"
+                                        autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4 col-lg-3">
                                 <div class="form-group">
                                     <label for="to-date">To Date</label>
-                                    <input type="date" name="to_date" id="to_date" class="form-control date-pickr" autocomplete="off">
+                                    <input type="date" name="to_date" id="to_date" class="form-control date-pickr"
+                                        autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -89,6 +102,7 @@
                     url: '{{ route('income.index') }}',
                     type: 'GET',
                     data: function(d) {
+                        d.source = $('#source').val();
                         d.from_date = $('#from_date').val();
                         d.to_date = $('#to_date').val();
                     },
@@ -127,6 +141,7 @@
             });
 
             $(document).on('click', '#reset-btn', function() {
+                $('#source').val('').trigger('change');
                 $('#from_date').val('');
                 $('#to_date').val('');
                 table.ajax.reload();

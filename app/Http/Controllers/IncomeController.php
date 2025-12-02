@@ -15,8 +15,14 @@ class IncomeController extends Controller
         if ($request->ajax()) {
             return DataTables::of(Income::where('user_id', Auth::user()->id))
                 ->filter(function ($query) use ($request) {
+                    $source = $request->get('source');
                     $from_date = $request->get('from_date');
                     $to_date = $request->get('to_date');
+
+                    if ($source) {
+                        $query->where('source_type', $source);
+                    }
+                    
                     if ($from_date && $to_date) {
                         $query->whereBetween('received_at', [$from_date, $to_date]);
                     }
@@ -24,7 +30,7 @@ class IncomeController extends Controller
                 ->addColumn('actions', function ($income) {
                     $editUrl = route('income.edit', $income->id);
                     $deleteUrl = route('income.destroy', $income->id);
-                    
+
                     return '
                         <a href="' . $editUrl . '" class="btn btn-primary">
                             <i class="ti ti-edit"></i> Edit
@@ -44,7 +50,7 @@ class IncomeController extends Controller
                     return $income->received_at->format('d-m-Y');
                 })
                 ->rawColumns(['actions'])
-                
+
                 ->make(true);
         }
         return view('income.index');
