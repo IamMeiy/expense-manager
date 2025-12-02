@@ -10,7 +10,7 @@
                 <a href="{{ route('bank-accounts.index') }}" class="btn btn-dark">
                     <i class="ti ti-arrow-left me-1"></i> Back
                 </a>
-            </div> 
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -75,7 +75,16 @@
                     <div class="row mx-2">
                         <div class="col-sm-12 col-md-4 col-lg-3">
                             <div class="form-group">
-
+                                <label for="from-date">From Date</label>
+                                <input type="date" name="from_date" id="from_date" class="form-control date-pickr"
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <div class="form-group">
+                                <label for="to-date">To Date</label>
+                                <input type="date" name="to_date" id="to_date" class="form-control date-pickr"
+                                    autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -146,7 +155,8 @@
     </div>
 
     {{-- Savings: Edit modal --}}
-    <div class="modal fade" id="editSavingsModal" tabindex="-1" aria-labelledby="editSavingsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editSavingsModal" tabindex="-1" aria-labelledby="editSavingsModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -194,7 +204,10 @@
                 ajax: {
                     url: '{{ route('savings.index', $bankAccount->id) }}',
                     type: 'GET',
-                    data: function(d) {}
+                    data: function(d) {
+                        d.from_date = $('#from_date').val();
+                        d.to_date = $('#to_date').val();
+                    },
                 },
                 columns: [{
                         data: 'DT_RowIndex',
@@ -232,7 +245,8 @@
             });
 
             $(document).on('click', '#reset-btn', function() {
-                $('#account_type').val('').trigger('change');
+                $('#from_date').val('');
+                $('#to_date').val('');
                 table.ajax.reload();
             });
 

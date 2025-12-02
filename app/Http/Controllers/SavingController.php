@@ -16,6 +16,14 @@ class SavingController extends Controller
         try {
             if ($request->ajax()) {
                 return DataTables::of(Saving::query()->where('bank_account_id', $bankAccount->id))
+                    ->filter(function ($query) use ($request) {
+                        $from_date = $request->get('from_date');
+                        $to_date = $request->get('to_date');
+
+                        if ($from_date && $to_date) {
+                            $query->whereBetween('saved_at', [$from_date, $to_date]);
+                        }
+                    })
                     ->addIndexColumn()
                     ->addColumn('saved_at', function ($saving) {
                         return Carbon::parse($saving->saved_at)->format('d-m-Y');
