@@ -1,4 +1,23 @@
 <?php
+/* Income source types */
+if(!defined('INCOME_SOURCES')) {
+    define('INCOME_SOURCES', [
+        1 => 'SALARY',
+        2 => 'FREELANCE',
+        3 => 'BUISNESS',
+        4 => 'GIFTS',
+        5 => 'CASHBACK / REWARD',
+        6 => 'INTEREST',
+        7 => 'INVESTMENT RETURNS',
+        8 => 'RENTAL INCOME',
+        9 => 'BONUS',
+        10 => 'TRANSFER',
+        11 => 'REFUND',
+        12 => 'LOAN RECEIVED',
+        13 => 'OTHER'
+    ]);
+}
+
 /* Payment method constants */
 if (!defined('PAYMENT_METHODS')) {
     define('PAYMENT_METHODS', [

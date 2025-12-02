@@ -34,6 +34,9 @@ class IncomeController extends Controller
                         </button>
                     ';
                 })
+                ->editColumn('source', function ($income) {
+                    return INCOME_SOURCES[$income->source_type];
+                })
                 ->editColumn('amount', function ($income) {
                     return number_format($income->amount, 2);
                 })
@@ -55,7 +58,7 @@ class IncomeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'source' => ['required', 'string', 'max:255'],
+            'source' => ['required', 'integer', 'max:255'],
             'amount' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
             'date' => ['required', 'date'],
@@ -67,7 +70,7 @@ class IncomeController extends Controller
 
             Income::create([
                 'user_id' => Auth::user()->id,
-                'source' => $validated['source'],
+                'source_type' => $validated['source'],
                 'amount' => number_format($validated['amount'], 2, '.', ''),
                 'description' => $validated['description'] ?? null,
                 'received_at' => $validated['date'],
@@ -94,7 +97,7 @@ class IncomeController extends Controller
     public function update(Request $request, Income $income)
     {
         $validated = $request->validate([
-            'source' => ['required', 'string', 'max:255'],
+            'source' => ['required', 'integer', 'max:255'],
             'amount' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
             'date' => ['required', 'date'],
@@ -108,7 +111,7 @@ class IncomeController extends Controller
             }
 
             $income->update([
-                'source' => $validated['source'],
+                'source_type' => $validated['source'],
                 'amount' => number_format($validated['amount'], 2, '.', ''),
                 'description' => $validated['description'] ?? null,
                 'received_at' => $validated['date'],

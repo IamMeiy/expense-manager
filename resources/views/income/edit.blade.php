@@ -18,7 +18,12 @@
 
                     <div class="mb-3">
                         <label for="source" class="form-label">Income Source</label>
-                        <input type="text" class="form-control" id="source" name="source" value="{{ $income->source }}" required>
+                        <select name="source" id="source" class="form-select select-2" required>
+                            <option value="">Select</option>
+                            @foreach (INCOME_SOURCES as $key => $source)
+                                <option value="{{ $key }}" {{ $key == $income->source_type ? 'selected' : '' }}>{{ $source }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="amount" class="form-label">Amount</label>

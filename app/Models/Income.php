@@ -14,7 +14,7 @@ class Income extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['user_id', 'source', 'amount', 'description', 'received_at'];
+    protected $fillable = ['user_id', 'source_type', 'amount', 'description', 'received_at'];
 
     protected $casts = [
         'received_at' => 'date'
